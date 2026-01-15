@@ -12,60 +12,62 @@ List<Map<String, Object>> articleRows = (List<Map<String, Object>>) request.getA
 <head>
 <meta charset="UTF-8">
 <title>게시글 목록</title>
+<style>
+table>thead>tr>th, table>tbody>tr>td {
+	padding: 10px;
+}
+</style>
 </head>
 <body>
-	<h1>게시글 목록, v4</h1>
+	<a href="../home/main">메인으로 이동</a>
 
+	<h1>게시글 목록</h1>
+
+	<table border="1"
+		style="border-collapse: collapse; border-color: green">
+		<thead>
+			<tr>
+				<th>번호</th>
+				<th>날짜</th>
+				<th>제목</th>
+				<th>내용</th>
+				<th>삭제</th>
+			</tr>
+		</thead>
+		<tbody>
+			<%
+			for (Map<String, Object> articleRow : articleRows) {
+			%>
+			<tr style="text-align: center;">
+				<td><%=articleRow.get("id")%>번</td>
+				<td><%=articleRow.get("regDate")%></td>
+
+				<td><a href="detail?id=<%=articleRow.get("id")%>"><%=articleRow.get("title")%></a></td>
+
+				<td><%=articleRow.get("body")%></td>
+				<td><a
+					onclick="if(confirm('정말 삭제할거임???') == false) {return false;}"
+					href="doDelete?id=<%=articleRow.get("id")%>">del</a></td>
+			</tr>
+			<%
+			}
+			%>
+		</tbody>
+	</table>
+
+	<!-- 
 	<ul>
-		<%
+	<%--	<%
 		for (Map<String, Object> articleRow : articleRows) {
 		%>
 		<li><%=articleRow.get("id")%> 번, <%=articleRow.get("regDate")%>,
-			<%=articleRow.get("title")%>, <%=articleRow.get("body")%></li>
-		<%
-		}
+			<a href="detail?id=<%=articleRow.get("id")%>"><%=articleRow.get("title")%></a>,
+			<%=articleRow.get("body")%></li>
+}
 		%>
+	--%>
 	</ul>
+	 -->
 
-
-	<h1>게시글 목록, v3</h1>
-
-	<ul>
-		<%
-		for (int i = 0; i < articleRows.size(); i++) {
-		%>
-		<li><%=articleRows.get(i).get("id")%> 번, <%=articleRows.get(i).get("regDate")%>,
-			<%=articleRows.get(i).get("title")%>, <%=articleRows.get(i).get("body")%></li>
-		<%
-		}
-		%>
-	</ul>
-
-
-	<h1>게시글 목록, v2</h1>
-
-	<ul>
-		<%
-		for (int i = 0; i <= 2; i++) {
-		%>
-		<li><%=articleRows.get(i).get("id")%> 번, <%=articleRows.get(i).get("regDate")%>,
-			<%=articleRows.get(i).get("title")%>, <%=articleRows.get(i).get("body")%></li>
-		<%
-		}
-		%>
-	</ul>
-
-	<h1>게시글 목록, v1</h1>
-
-	<ul>
-		<li><%=articleRows.get(0).get("id")%> 번, <%=articleRows.get(0).get("regDate")%>,
-			<%=articleRows.get(0).get("title")%>, <%=articleRows.get(0).get("body")%></li>
-
-		<li><%=articleRows.get(1).get("id")%> 번, <%=articleRows.get(1).get("regDate")%>,
-			<%=articleRows.get(1).get("title")%>, <%=articleRows.get(1).get("body")%></li>
-
-		<li><%=articleRows.get(2).get("id")%> 번, <%=articleRows.get(2).get("regDate")%>,
-			<%=articleRows.get(2).get("title")%>, <%=articleRows.get(2).get("body")%></li>
-	</ul>
 </body>
 </html>
