@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
 
 import com.KoreaIT.java.AM_jsp.util.DBUtil;
 import com.KoreaIT.java.AM_jsp.util.SecSql;
@@ -16,8 +14,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/article/list")
-public class ArticleListServlet extends HttpServlet {
+@WebServlet("/article/doWrite")
+public class ArticleDoWriteServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -39,35 +37,20 @@ public class ArticleListServlet extends HttpServlet {
 
 		try {
 			conn = DriverManager.getConnection(url, user, password);
+			response.getWriter().append("연결 성공");
 
-			int page = 1;
+			String title = request.getParameter("title");
+			String body = request.getParameter("body");
 
-			if (request.getParameter("page") != null && request.getParameter("page").length() != 0) {
-				page = Integer.parseInt(request.getParameter("page"));
-			}
+			SecSql sql = SecSql.from("INSERT INTO article");
+			sql.append("SET regDate = NOW(),");
+			sql.append("title = ?,", title);
+			sql.append("`body` = ?;", body);
 
-			int itemsInAPage = 10;
-			int limitFrom = (page - 1) * itemsInAPage;
+			int id = DBUtil.insert(conn, sql);
 
-			SecSql sql = SecSql.from("SELECT COUNT(*)");
-			sql.append("FROM article;");
-
-			int totalCnt = DBUtil.selectRowIntValue(conn, sql);
-			int totalPage = (int) Math.ceil(totalCnt / (double) itemsInAPage);
-
-			sql = SecSql.from("SELECT *");
-			sql.append("FROM article");
-			sql.append("ORDER BY id DESC");
-			sql.append("LIMIT ?, ?;", limitFrom, itemsInAPage);
-
-			List<Map<String, Object>> articleRows = DBUtil.selectRows(conn, sql);
-
-			request.setAttribute("page", page);
-			request.setAttribute("articleRows", articleRows);
-			request.setAttribute("totalCnt", totalCnt);
-			request.setAttribute("totalPage", totalPage);
-
-			request.getRequestDispatcher("/jsp/article/list.jsp").forward(request, response);
+			response.getWriter()
+					.append(String.format("<script>alert('%d번 글이 작성됨'); location.replace('list');</script>", id));
 
 		} catch (SQLException e) {
 			System.out.println("에러 : " + e);
@@ -80,6 +63,11 @@ public class ArticleListServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		doGet(request, response);
 	}
 
 }
