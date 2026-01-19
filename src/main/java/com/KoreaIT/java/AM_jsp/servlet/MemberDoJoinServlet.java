@@ -22,7 +22,7 @@ public class MemberDoJoinServlet extends HttpServlet {
 
 		response.setContentType("text/html;charset=UTF-8");
 
-		try {
+		try { 
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
 			System.out.println("클래스 없음");
